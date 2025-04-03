@@ -3,8 +3,9 @@
     using System.Collections.Generic;
     public class HrPerson
     {
-
-        private List<Employee> employees = new List<Employee>();
+        // This replaces the hardcoded cubeId from the original code
+        private const string DEMO_CUBEID = "B101";
+        private List<Employee> employees = [];
 
         public HrPerson()
         {
@@ -12,14 +13,15 @@
 
         public void HireEmployee(string firstName, string lastName, string ssn)
         {
-            Employee emp = new Employee(firstName, lastName, ssn);
+            Employee emp = new(firstName, lastName, ssn);
             employees.Add(emp);
-            OrientEmployee(emp);
+            OrientEmployee(emp, DEMO_CUBEID);
         }
 
-        public void OrientEmployee(Employee emp)
+        // I added cubeId as a parameter to this method to remove the magic number
+        public static void OrientEmployee(Employee emp, string cubeId)
         {
-            emp.DoFirstTimeOrientation("B101");
+            emp.DoFirstTimeOrientation(cubeId);
         }
 
         public void OutputReport(string ssn)

@@ -4,7 +4,7 @@
     {
         static void Main(string[] args)
         {
-            Company company = new Company();
+            Company company = new();
 
             company.HireEmployee("John", "Doe", "444-44-4444");
 

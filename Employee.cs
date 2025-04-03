@@ -1,10 +1,13 @@
 ﻿namespace HoganMod2Assignment
 {    
     using System.Globalization;
-    public class Employee
+    // Import regex for SSN validation
+    using System.Text.RegularExpressions;
+    public partial class Employee
     {
         private const string REQURED_MSG = " is mandatory ";
         private const string NEW_LINE = "\n";
+        private const string SSN_REGEX = @"^(?!666|000|9\d{2})\d{3}-(?!00)\d{2}-(?!0{4})\d{4}$"; // Regex pattern for SSN format
 
         private string firstName;
         private string lastName;
@@ -15,7 +18,7 @@
         private bool movedIn;
         private string cubeId;
         private DateTime orientationDate;
-        private EmployeeReportService reportService = new EmployeeReportService();
+        private EmployeeReportService reportService = new();
 
         public Employee(string firstName, string lastName, string ssn)
         {
@@ -31,6 +34,7 @@
 
         public void DoFirstTimeOrientation(string cubeId)
         {
+
             orientationDate = DateTime.Now;
             MeetWithHrForBenefitAndSalaryInfo();
             MeetDepartmentStaff();
@@ -58,8 +62,8 @@
 
         public void MoveIntoCubicle(string cubeId)
         {
-            movedIn = true;
-            this.cubeId = cubeId;
+            SetMovedIn(true);
+            SetCubeId(cubeId);
             reportService.AddData(firstName + " " + lastName + " moved into cubicle " + cubeId + " on " + GetFormattedDate() + NEW_LINE);
         }
 
@@ -96,11 +100,14 @@
             return ssn;
         }
 
+        // Using a regex to validate the SSN format
+        [GeneratedRegex(SSN_REGEX)]
+        private static partial Regex MyRegex();
         public void SetSsn(string ssn)
         {
-            if (ssn == null || ssn.Length < 9 || ssn.Length > 11)
+            if (!MyRegex().IsMatch(ssn))
             {
-                throw new ArgumentException("SSN" + REQURED_MSG + "and must be between 9 and 11 characters long (if hyphenated)");
+                throw new ArgumentException("SSN" + REQURED_MSG + "and must be in the format XXX-XX-XXXX");
             }
             this.ssn = ssn;
         }
@@ -125,12 +132,17 @@
             return movedIn;
         }
 
+        private void SetMovedIn(bool movedIn)
+        {
+            this.movedIn = movedIn;
+        }
+
         public string GetCubeId()
         {
             return cubeId;
         }
 
-        public void SetCubeId(string cubeId)
+        private void SetCubeId(string cubeId)
         {
             if (cubeId == null || cubeId.Length == 0)
             {
